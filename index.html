@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevCraft Elite | Advanced Systems & Web Architect</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #00ff88;
+            --primary-glow: rgba(0, 255, 136, 0.4);
+            --secondary: #00d4ff;
+            --secondary-glow: rgba(0, 212, 255, 0.3);
+            --bg-dark: #010409;
+            --text-main: #ffffff;
+            --text-dim: rgba(255, 255, 255, 0.7);
+            --text-dimmer: rgba(255, 255, 255, 0.5);
+            --glass: rgba(13, 17, 23, 0.8);
+            --glass-light: rgba(13, 17, 23, 0.6);
+            --border: rgba(0, 255, 136, 0.2);
+            --border-secondary: rgba(0, 212, 255, 0.2);
+            --font-heading: 'Space Grotesk', sans-serif;
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        
+        body { 
+            background-color: var(--bg-dark); 
+            color: var(--text-main); 
+            font-family: var(--font-body); 
+            overflow-x: hidden; 
+            line-height: 1.7;
+        }
+
+        #bg-canvas { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            z-index: -1; 
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .container { max-width: 1300px; margin: 0 auto; padding: 0 5%; }
+
+        /* --- NAVIGATION --- */
+        nav { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 20px 8%; position: fixed; width: 100%; z-index: 1000; 
+            backdrop-filter: blur(20px); border-bottom: 1px solid var(--border);
+            background: rgba(1, 4, 9, 0.7);
+        }
+        
+        .logo { display: flex; align-items: center; gap: 10px; font-family: var(--font-heading); font-weight: 700; font-size: 1.6rem; color: #fff; text-decoration: none; }
+        .logo span { color: var(--primary); }
+        .nav-links { display: flex; gap: 35px; }
+        .nav-links a { text-decoration: none; color: var(--text-dim); font-size: 0.95rem; transition: 0.3s; font-weight: 600; }
+        .nav-links a:hover { color: var(--primary); text-shadow: 0 0 10px var(--primary-glow); }
+        .btn-start { background: var(--primary); color: #000; padding: 12px 26px; border-radius: 8px; text-decoration: none; font-weight: 800; font-size: 0.9rem; transition: 0.3s; cursor: pointer; border: none; }
+        .btn-start:hover { transform: translateY(-2px); box-shadow: 0 5px 20px var(--primary-glow); }
+
+        /* --- HERO SECTION --- */
+        .hero { height: 100vh; display: grid; grid-template-columns: 1.1fr 0.9fr; align-items: center; gap: 50px; padding-top: 80px; }
+        .hero-left { z-index: 2; }
+        .badge { background: rgba(0, 255, 136, 0.1); color: var(--primary); padding: 8px 20px; border-radius: 50px; border: 1px solid var(--primary); display: inline-flex; align-items: center; gap: 10px; font-size: 0.85rem; font-weight: 700; margin-bottom: 30px; letter-spacing: 1px; animation: pulse-glow 2s infinite; }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(0, 255, 136, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.6); }
+        }
+
+        .hero h1 { font-family: var(--font-heading); font-size: clamp(3rem, 6vw, 5rem); line-height: 1.1; margin-bottom: 25px; font-weight: 800; }
+        .hero h1 span { color: var(--primary); text-shadow: 0 0 30px var(--primary-glow); }
+        .hero p { color: var(--text-dim); font-size: 1.2rem; max-width: 600px; margin-bottom: 40px; }
+
+        /* --- TERMINAL WINDOW --- */
+        .terminal-window { 
+            background: rgba(10, 20, 35, 0.95); 
+            border: 1px solid rgba(0, 255, 136, 0.3); 
+            border-radius: 12px; 
+            padding: 25px; 
+            font-family: 'JetBrains Mono', monospace; 
+            box-shadow: 0 30px 80px rgba(0,0,0,0.8), 0 0 60px rgba(0, 255, 136, 0.15), inset 0 0 30px rgba(0, 255, 136, 0.05);
+            position: relative;
+            backdrop-filter: blur(10px);
+            animation: float-terminal 3s ease-in-out infinite;
+        }
+
+        @keyframes float-terminal {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .term-header { 
+            display: flex; 
+            gap: 10px; 
+            margin-bottom: 20px; 
+            border-bottom: 1px solid rgba(0, 255, 136, 0.2); 
+            padding-bottom: 10px;
+            align-items: center;
+        }
+        
+        .dot { 
+            width: 12px; 
+            height: 12px; 
+            border-radius: 50%; 
+            flex-shrink: 0;
+        }
+        
+        .d1 { background: #ff5f56; } 
+        .d2 { background: #ffbd2e; } 
+        .d3 { background: #27c93f; }
+
+        .terminal-user {
+            color: var(--text-dim);
+            font-size: 0.7rem;
+            margin-left: auto;
+            letter-spacing: 1px;
+        }
+
+        #typewriter {
+            font-size: 0.9rem;
+            color: #00ff88;
+            line-height: 1.8;
+            min-height: 200px;
+        }
+
+        #typewriter div {
+            margin-bottom: 8px;
+            animation: fadeInLine 0.3s ease-in;
+        }
+
+        @keyframes fadeInLine {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .terminal-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 1em;
+            background: var(--primary);
+            margin-left: 2px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        /* --- SECTION GLOBAL --- */
+        .section-padding { padding: 120px 0; }
+        .section-title { text-align: center; font-family: var(--font-heading); font-size: 3rem; margin-bottom: 70px; font-weight: 800; }
+        .section-title span { color: var(--primary); }
+
+        /* --- ABOUT ME --- */
+        .about-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 80px; align-items: start; }
+        .about-text h2 { font-size: 2.5rem; margin-bottom: 25px; font-family: var(--font-heading); }
+        .about-text p { color: var(--text-dim); margin-bottom: 25px; font-size: 1.1rem; text-align: justify; }
+        
+        .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; }
+        .stat-item { 
+            background: var(--glass); 
+            padding: 30px; 
+            border-radius: 15px; 
+            border: 1px solid var(--border); 
+            text-align: center;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .stat-item:hover::before { left: 100%; }
+        .stat-item:hover { transform: translateY(-5px); border-color: var(--primary); }
+        
+        .stat-item h3 { font-size: 2rem; color: var(--primary); position: relative; z-index: 1; }
+        .stat-item span { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); position: relative; z-index: 1; }
+
+        /* --- DETAILED ABOUT SECTION --- */
+        .about-detailed {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .detail-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 35px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+        }
+
+        .detail-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0, 255, 136, 0.1);
+        }
+
+        .detail-card h3 {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            font-family: var(--font-heading);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-card h3 i { font-size: 1.8rem; }
+
+        .detail-card p {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .detail-list {
+            list-style: none;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .detail-list li {
+            margin-bottom: 12px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .detail-list li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* --- SKILLS MATRIX --- */
+        .skills-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+            gap: 30px; 
+        }
+
+        .skill-card { 
+            background: var(--glass); 
+            border: 1px solid var(--border); 
+            padding: 40px; 
+            border-radius: 24px; 
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), transparent);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s;
+        }
+
+        .skill-card:hover::before { transform: scaleX(1); }
+        .skill-card:hover { 
+            transform: translateY(-15px); 
+            border-color: var(--primary); 
+            box-shadow: 0 20px 40px rgba(0, 255, 136, 0.15); 
+        }
+
+        .skill-card i { 
+            font-size: 3rem; 
+            color: var(--primary); 
+            margin-bottom: 25px; 
+            text-shadow: 0 0 20px var(--primary-glow);
+            display: block;
+        }
+
+        .skill-card h3 { 
+            font-size: 1.8rem; 
+            margin-bottom: 15px; 
+            font-family: var(--font-heading);
+        }
+
+        .skill-desc { 
+            font-size: 0.95rem; 
+            color: var(--text-dim); 
+            margin-bottom: 20px; 
+            border-bottom: 1px solid rgba(255,255,255,0.1); 
+            padding-bottom: 15px;
+        }
+
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; }
+        .tag { 
+            background: rgba(0, 255, 136, 0.1); 
+            border: 1px solid var(--border); 
+            color: var(--primary); 
+            padding: 6px 14px; 
+            border-radius: 6px; 
+            font-size: 0.8rem; 
+            font-family: 'JetBrains Mono';
+            transition: 0.3s;
+        }
+
+        .tag:hover {
+            background: rgba(0, 255, 136, 0.2);
+            transform: scale(1.05);
+        }
+
+        /* --- EXPERIENCE SECTION --- */
+        .experience-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .experience-card {
+            background: var(--glass);
+            border: 1px solid var(--border-secondary);
+            border-radius: 15px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s;
+        }
+
+        .experience-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--secondary), transparent);
+        }
+
+        .experience-card:hover {
+            border-color: var(--secondary);
+            box-shadow: 0 15px 35px rgba(0, 212, 255, 0.1);
+        }
+
+        .exp-header {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 20px;
+            margin-bottom: 20px;
+            align-items: start;
+        }
+
+        .exp-title {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .exp-title h3 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+            font-family: var(--font-heading);
+        }
+
+        .exp-title p {
+            color: var(--secondary);
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .exp-period {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid var(--border-secondary);
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: var(--secondary);
+            font-size: 0.9rem;
+            font-family: 'JetBrains Mono';
+            white-space: nowrap;
+        }
+
+        .exp-description {
+            color: var(--text-dim);
+            margin-bottom: 20px;
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+
+        .exp-highlights {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .highlight-item {
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .highlight-item::before {
+            content: '✓';
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        /* --- TECHS PROFICIENCY --- */
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .tech-badge {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 212, 255, 0.1));
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            font-family: 'JetBrains Mono';
+            transition: all 0.3s;
+        }
+
+        .tech-badge:hover {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 212, 255, 0.2));
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* --- FOOTER --- */
+        footer { 
+            padding: 80px 0; 
+            text-align: center; 
+            border-top: 1px solid var(--border); 
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(10px);
+        }
+
+        .social-links { display: flex; justify-content: center; gap: 25px; margin-bottom: 30px; }
+        .social-links a { 
+            color: var(--text-dim); 
+            font-size: 1.5rem; 
+            transition: 0.3s; 
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+        }
+        .social-links a:hover { 
+            color: var(--primary); 
+            transform: scale(1.2);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 968px) {
+            .hero, .about-grid { grid-template-columns: 1fr; text-align: center; }
+            .terminal-window { 
+                display: none; 
+            }
+            .hero p { margin: 0 auto 30px; }
+            .stats-row, .about-detailed, .exp-highlights { grid-template-columns: 1fr; }
+            .nav-links { gap: 15px; }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .section-title { font-size: 2rem; }
+            .skill-card { padding: 25px; }
+            nav { padding: 15px 5%; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="bg-canvas"></canvas>
+
+    <nav>
+        <a href="#" class="logo"><i class="fas fa-rocket"></i> ir. Lapendos Dev<span>.</span></a>
+        <div class="nav-links">
+            <a href="#about">About</a>
+            <a href="#skills">Mastery</a>
+            <a href="#experience">History</a>
+            <a href="#contact">Contact</a>
+        </div>
+        <a href="#" class="btn-start">Portofolio Developer</a>
+    </nav>
+
+    <div class="container">
+        <section class="hero">
+            <div class="hero-left">
+                <div class="badge"><i class="fas fa-meteor"></i> Hyper-Speed Development Active</div>
+                <h1>Beyond the <span>Cloud.</span> Limits Within the Code.</h1>
+                <p>Arsitek sistem yang menjembatani performa ekstrim server Minecraft dengan keindahan antarmuka web modern. Mari membangun masa depan digital Anda dengan teknologi terdepan dan inovasi tanpa henti.</p>
+                <div style="display: flex; gap: 20px;">
+                    <a href="#contact" class="btn-start" style="padding: 16px 35px; font-size: 1rem;">Let's Talk <i class="fas fa-arrow-right"></i></a>
+                    <a href="#skills" style="color: #fff; text-decoration: none; align-self: center; font-weight: 600;">View Skillsets</a>
+                </div>
+            </div>
+            <div class="hero-right">
+                <div class="terminal-window">
+                    <div class="term-header">
+                        <div class="dot d1"></div>
+                        <div class="dot d2"></div>
+                        <div class="dot d3"></div>
+                        <span class="terminal-user">root@galaxy-server:~#</span>
+                    </div>
+                    <div id="typewriter"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="section-padding about-grid">
+            <div class="about-text">
+                <h2 class="section-title" style="text-align: left; margin-bottom: 30px;">About <span>Me</span></h2>
+                <p>Selamat datang di website saya. Saya adalah developer yang menggabungkan logika pemrograman Java dengan fleksibilitas kreatif teknologi web. Perjalanan saya dimulai dari kecintaan pada Developer Server Minecraft, yang kemudian berkembang menjadi keahlian dalam menangani infrastruktur server minecraft dengan performa maksimal.</p>
+                
+                <p>Saya percaya bahwa kode yang baik bukan hanya yang "berjalan", tapi kode yang memiliki skalabilitas tinggi, keamanan yang tak tertembus, dan efisiensi memori yang maksimal. Setiap baris kode yang saya tulis adalah komitmen terhadap kualitas dan kesempurnaan. Dengan pengalaman lebih dari 2 tahun, saya telah mengembangkan instink untuk mengidentifikasi sistem dan mengoptimalkannya hingga mencapai performa puncak.</p>
+
+                <p>Passion saya terletak pada bidang <strong>server infrastructure</strong>, <strong>game development</strong>, dan <strong>web architecture</strong>. Saya tidak hanya menulis code, tetapi membangun ekosistem digital yang sustainable dan scalable.</p>
+                
+                <div class="stats-row">
+                    <div class="stat-item"><h3>2+</h3><span>Years Experience</span></div>
+                    <div class="stat-item"><h3>20+</h3><span>Project Ships</span></div>
+                    <div class="stat-item"><h3>20/20</h3><span>TPS Guaranteed</span></div>
+                </div>
+            </div>
+            <div class="skill-card" style="background: rgba(0, 255, 136, 0.05); height: fit-content; border: 1px solid rgba(0, 255, 136, 0.3);">
+                <h3 style="color: var(--primary); display: flex; align-items: center; gap: 10px;"><i class="fas fa-lightbulb"></i> Full-Stack Vision</h3>
+                <p style="font-style: italic; font-size: 0.95rem; margin-bottom: 15px; color: var(--text-dim);">"Everything is a system, and every system can be optimized."</p>
+                <p style="font-size: 0.9rem; color: var(--text-dim); margin-bottom: 15px;">Dari backend server Minecraft yang menggunakan NMS (Net.Minecraft.Server) hingga frontend landing page yang responsif dengan animasi GSAP/Three.js. Saya menguasai seluruh stack teknologi modern untuk menciptakan solusi end-to-end yang sempurna.</p>
+                <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border);">
+                <div class="skill-tags">
+                    <span class="tag">Solution Oriented</span>
+                    <span class="tag">Performance Driven</span>
+                    <span class="tag">Clean Code</span>
+                    <span class="tag">Scalability Focus</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- DETAILED ABOUT SECTION -->
+        <section style="padding: 60px 0;">
+            <h2 class="section-title">My <span>Expertise</span></h2>
+            <div class="about-detailed">
+                <div class="detail-card">
+                    <h3><i class="fas fa-brain"></i> Problem Solving Mindset</h3>
+                    <p>Saya menghadapi setiap tantangan dengan pendekatan sistematis dan analytical. Kemampuan debug yang kuat memungkinkan saya menemukan akar masalah dengan cepat dan efisien.</p>
+                    <ul class="detail-list">
+                        <li>Analytical thinking dan logical reasoning</li>
+                        <li>Debugging expertise dengan tools profesional</li>
+                        <li>System architecture design</li>
+                        <li>Performance optimization techniques</li>
+                    </ul>
+                </div>
+
+                <div class="detail-card">
+                    <h3><i class="fas fa-rocket"></i> Innovation & Creativity</h3>
+                    <p>Saya tidak hanya mengikuti trend, tetapi menciptakan solusi inovatif yang ahead of the curve. Kombinasi kreativitas dengan technical knowledge menghasilkan produk yang memorable.</p>
+                    <ul class="detail-list">
+                        <li>Creative problem-solving approaches</li>
+                        <li>Latest technology adoption</li>
+                        <li>UI/UX design awareness</li>
+                        <li>Experimental features development</li>
+                    </ul>
+                </div>
+
+                <div class="detail-card">
+                    <h3><i class="fas fa-cogs"></i> Technical Excellence</h3>
+                    <p>Komitmen pada kualitas kode adalah prioritas utama. Saya mengikuti best practices dan design patterns untuk memastikan codebase yang maintainable dan robust.</p>
+                    <ul class="detail-list">
+                        <li>SOLID principles adherence</li>
+                        <li>Design patterns mastery</li>
+                        <li>Code review expertise</li>
+                        <li>Testing automation (Unit, Integration)</li>
+                    </ul>
+                </div>
+
+                <div class="detail-card">
+                    <h3><i class="fas fa-users"></i> Collaboration & Leadership</h3>
+                    <p>Saya percaya pada kekuatan teamwork dan komunikasi yang jelas. Pengalaman bekerja dengan tim multidisiplin membuat saya mampu mengelola proyek besar dengan efektif.</p>
+                    <ul class="detail-list">
+                        <li>Team communication excellence</li>
+                        <li>Project management skills</li>
+                        <li>Mentoring junior developers</li>
+                        <li>Stakeholder management</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="section-padding">
+            <h2 class="section-title">Technical <span>Mastery Matrix</span></h2>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <i class="fas fa-cube"></i>
+                    <h3>Minecraft Server Dev</h3>
+                    <p class="skill-desc">Pengembangan inti server dengan fokus pada stabilitas, fitur kustom eksklusif, dan performa maksimal untuk pengalaman gaming terbaik.</p>
+                    <p style="font-size: 0.9rem; color: var(--text-dim); margin-bottom: 15px;">Saya memiliki expertise mendalam dalam mengembangkan plugin dan mod untuk server Minecraft. Dengan pemahaman tentang Minecraft Protocol dan server architecture, saya dapat menciptakan fitur-fitur custom yang seamless dan high-performance.</p>
+                    <ul style="list-style: none; color: var(--text-dim); font-size: 0.9rem; margin-bottom: 15px;">
+                        <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: var(--primary);"></i> NMS (Net.Minecraft.Server) Hooking</li>
+                        <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: var(--primary);"></i> Asynchronous Data Processing</li>
+                        <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: var(--primary);"></i> Redis Pub/Sub Cross-Server Sync</li>
+                        <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: var(--primary);"></i> JVM Tuning & GC Optimization</li>
+                        <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: var(--primary);"></i> Custom Protocol Implementation</li>
+                        <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: var(--primary);"></i> Database Integration & Caching</li>
+                    </ul>
+                    <div class="skill-tags">
+                        <span class="tag">Paper/Spigot</span><span class="tag">Velocity</span><span class="tag">SQL/NoSQL</span><span class="tag">Redis</span><span class="tag">Plugin Dev</span>
+                    </div>
+                </div>
+
+                <div class="skill-card">
+                    <i class="fas fa-code"></i>
+                    <h3>Modern Web Stack</h3>
+                    <p class="skill-desc">Membangun antarmuka web yang interaktif, cepat, responsif, dan SEO-friendly dengan teknologi terkini.</p>
+                    <p style="font-size: 0.9rem; color: var(--text-dim); margin-bottom: 15px;">Frontend development adalah passion saya. Saya menguasai HTML5, CSS3 modern (Grid, Flexbox), dan JavaScript ES6+ untuk menciptakan user experience yang stunning dan functional. Pengalaman dengan framework seperti React dan Vue memberikan saya kemampuan untuk membangun aplikasi yang scalable.</p>
+                    <ul style="list-style: none; color: var(--text-dim); font-size: 0.9rem; margin-bottom: 15px;">
+                        <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: var(--primary);"></i> Semantic HTML5 & Modern CSS (Grid/Flex)</li>
+                        <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: var(--primary);"></i> JavaScript ES6+ & DOM Manipulation</li>
+                        <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: var(--primary);"></i> Three.js 3D Web Rendering</li>
+                        <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: var(--primary);"></i> Responsive Web Design (RWD)</li>
+                        <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: var(--primary);"></i> Animation Libraries (GSAP, Anime.js)</li>
+                        <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: var(--primary);"></i> CSS Preprocessing (SCSS/SASS)</li>
+                    </ul>
+                    <div class="skill-tags">
+                        <span class="tag">HTML/CSS</span><span class="tag">JavaScript</span><span class="tag">Web3D</span><span class="tag">React</span><span class="tag">Animation</span>
+                    </div>
+                </div>
+
+                <div class="skill-card">
+                    <i class="fas fa-terminal"></i>
+                    <h3>System Infrastructure</h3>
+                    <p class="skill-desc">Manajemen Linux Server dan keamanan jaringan tingkat enterprise dengan automation dan monitoring.</p>
+                    <p style="font-size: 0.9rem; color: var(--text-dim); margin-bottom: 15px;">Saya berpengalaman mengelola infrastruktur server berskala besar dengan focus pada security, reliability, dan performance. Linux adalah second home saya, dan saya mahir dalam configuration, troubleshooting, dan optimization.</p>
+                    <ul style="list-style: none; color: var(--text-dim); font-size: 0.9rem; margin-bottom: 15px;">
+                        <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: var(--primary);"></i> Linux Hardening (Ubuntu/Debian/CentOS)</li>
+                        <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: var(--primary);"></i> Docker Containerization & Orchestration</li>
+                        <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: var(--primary);"></i> Advanced IPTables & Firewall Config</li>
+                        <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: var(--primary);"></i> Automated Bash/Python Scripting</li>
+                        <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: var(--primary);"></i> SSL/TLS Certificate Management</li>
+                        <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: var(--primary);"></i> System Monitoring & Logging</li>
+                    </ul>
+                    <div class="skill-tags">
+                        <span class="tag">Bash</span><span class="tag">Security</span><span class="tag">Networking</span><span class="tag">Docker</span><span class="tag">Linux</span>
+                    </div>
+                </div>
+
+                <div class="skill-card">
+                    <i class="fas fa-database"></i>
+                    <h3>Backend & Databases</h3>
+                    <p class="skill-desc">Pengembangan backend yang robust dengan database optimization dan API design yang scalable.</p>
+                    <p style="font-size: 0.9rem; color: var(--text-dim); margin-bottom: 15px;">Backend architecture adalah fondasi dari setiap aplikasi besar. Saya memahami trade-off antara berbagai database systems dan dapat memilih solusi yang tepat untuk setiap use case. Java adalah bahasa utama saya untuk backend development.</p>
+                    <ul style="list-style: none; color: var(--text-dim); font-size: 0.9rem; margin-bottom: 15px;">
+                        <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: var(--primary);"></i> Java Spring Boot Framework</li>
+                        <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: var(--primary);"></i> RESTful API Design & Implementation</li>
+                        <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: var(--primary);"></i> SQL Database (MySQL, PostgreSQL)</li>
+                        <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: var(--primary);"></i> NoSQL Database (MongoDB, Redis)</li>
+                        <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: var(--primary);"></i> Message Queuing & Event Systems</li>
+                        <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: var(--primary);"></i> Caching Strategies & Optimization</li>
+                    </ul>
+                    <div class="skill-tags">
+                        <span class="tag">Java</span><span class="tag">Spring Boot</span><span class="tag">SQL/NoSQL</span><span class="tag">API Design</span><span class="tag">Caching</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EXPERIENCE SECTION -->
+        <section id="experience" class="section-padding">
+            <h2 class="section-title">Experience <span>Journey</span></h2>
+            <div class="experience-container">
+                <div class="experience-card">
+                    <div class="exp-header">
+                        <div class="exp-title">
+                            <h3><i class="fas fa-crown"></i> Senior Server Architect</h3>
+                            <p>SkyNetwork Gaming - Hyper-Scale Gaming Infrastructure</p>
+                        </div>
+                        <div class="exp-period">2024 - Present</div>
+                    </div>
+                    <div class="exp-description">
+                        Memimpin tim development dalam membangun infrastruktur server gaming yang dapat menangani jutaan concurrent connections. Bertanggung jawab atas architecture decision, performance optimization, dan technical leadership dalam proyek skala besar.
+                    </div>
+                    <div class="exp-highlights">
+                        <div class="highlight-item">Increased TPS from 15 to 20/20</div>
+                        <div class="highlight-item">Reduced latency by 40%</div>
+                        <div class="highlight-item">Managed 130+ concurrent players</div>
+                        <div class="highlight-item">Led team of 8 developers</div>
+                    </div>
+                    <div>
+                        <p style="font-size: 0.85rem; color: var(--text-dimmer); margin-bottom: 15px;"><strong>Technologies:</strong></p>
+                        <div class="tech-stack">
+                            <span class="tech-badge">Java 21</span>
+                            <span class="tech-badge">Minecraft NMS</span>
+                            <span class="tech-badge">Redis Cluster</span>
+                            <span class="tech-badge">MySQL Replication</span>
+                            <span class="tech-badge">Docker Swarm</span>
+                            <span class="tech-badge">Linux Kernel Tuning</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="experience-card">
+                    <div class="exp-header">
+                        <div class="exp-title">
+                            <h3><i class="fas fa-code"></i> Full-Stack Developer</h3>
+                            <p>Game & Web Development</p>
+                        </div>
+                        <div class="exp-period">2021 - 2024</div>
+                    </div>
+                    <div class="exp-description">
+                        Mengembangkan plugin server gaming dan website frontend untuk platform gaming berskala menengah. Handled end-to-end development dari requirements gathering hingga deployment dan maintenance. Bertanggung jawab atas code quality dan sistem architecture.
+                    </div>
+                    <div class="exp-highlights">
+                        <div class="highlight-item">Developed 50+ plugins</div>
+                        <div class="highlight-item">Created 5+ web platforms</div>
+                        <div class="highlight-item">100% uptime achievement</div>
+                        <div class="highlight-item">Performance improvements 60%</div>
+                    </div>
+                    <div>
+                        <p style="font-size: 0.85rem; color: var(--text-dimmer); margin-bottom: 15px;"><strong>Technologies:</strong></p>
+                        <div class="tech-stack">
+                            <span class="tech-badge">Java</span>
+                            <span class="tech-badge">JavaScript/ES6</span>
+                            <span class="tech-badge">React</span>
+                            <span class="tech-badge">Spring Boot</span>
+                            <span class="tech-badge">PostgreSQL</span>
+                            <span class="tech-badge">Docker</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="experience-card">
+                    <div class="exp-header">
+                        <div class="exp-title">
+                            <h3><i class="fas fa-rocket"></i> Junior Developer</h3>
+                            <p>Game Development</p>
+                        </div>
+                        <div class="exp-period">2019 - 2021</div>
+                    </div>
+                    <div class="exp-description">
+                        Memulai karir sebagai junior developer dengan fokus pada frontend web development dan basic backend tasks. Belajar best practices dari senior developers dan continuously improving technical skills melalui real-world projects.
+                    </div>
+                    <div class="exp-highlights">
+                        <div class="highlight-item">Completed 5+ projects</div>
+                        <div class="highlight-item">Learned multiple tech stacks</div>
+                        <div class="highlight-item">Mentored by senior architects</div>
+                        <div class="highlight-item">Promoted twice in 2 years</div>
+                    </div>
+                    <div>
+                        <p style="font-size: 0.85rem; color: var(--text-dimmer); margin-bottom: 15px;"><strong>Technologies:</strong></p>
+                        <div class="tech-stack">
+                            <span class="tech-badge">HTML/CSS</span>
+                            <span class="tech-badge">JavaScript</span>
+                            <span class="tech-badge">jQuery</span>
+                            <span class="tech-badge">PHP</span>
+                            <span class="tech-badge">MySQL</span>
+                            <span class="tech-badge">Git</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECTS SHOWCASE -->
+        <section style="padding: 120px 0;">
+            <h2 class="section-title">Notable <span>Projects</span></h2>
+            <div class="skills-grid" style="grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));">
+                <div class="skill-card">
+                    <i class="fas fa-globe"></i>
+                    <h3>SkyNetwork Platform</h3>
+                    <p class="skill-desc">Complete gaming ecosystem dengan server infrastructure, web dashboard, dan real-time monitoring system.</p>
+                    <p style="font-size: 0.9rem; color: var(--text-dim); margin-bottom: 15px;">Platform gaming multi-server yang dapat menangani ribuan pemain secara simultan. Didesain dengan arsitektur microservices yang scalable dan dilengkapi dengan advanced analytics dashboard.</p>
+                    <div style="background: rgba(0, 255, 136, 0.05); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                        <p style="font-size: 0.85rem; color: var(--text-dimmer); margin-bottom: 8px;"><strong>Impact:</strong></p>
+                        <ul style="list-style: none; color: var(--text-dim); font-size: 0.85rem;">
+                            <li>✓ 500K+ concurrent players</li>
+                            <li>✓ 99.95% uptime SLA</li>
+                            <li>✓ $2M+ annual revenue</li>
+                        </ul>
+                    </div>
+                    <div class="skill-tags">
+                        <span class="tag">Java</span><span class="tag">React</span><span class="tag">Kubernetes</span><span class="tag">MongoDB</span>
+                    </div>
+                </div>
+
+                <div class="skill-card">
+                    <i class="fas fa-layer-group"></i>
+                    <h3>CustomMC Framework</h3>
+                    <p class="skill-desc">Open-source Minecraft plugin framework yang menyederhanakan development dan meningkatkan performance.</p>
+                    <p style="font-size: 0.9rem; color: var(--text-dim); margin-bottom: 15px;">Framework yang dirancang untuk mempercepat development lifecycle dan meningkatkan code quality. Dilengkapi dengan built-in utilities, event system, dan performance optimizations yang proven efektif.</p>
+                    <div style="background: rgba(0, 255, 136, 0.05); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                        <p style="font-size: 0.85rem; color: var(--text-dimmer); margin-bottom: 8px;"><strong>Stats:</strong></p>
+                        <ul style="list-style: none; color: var(--text-dim); font-size: 0.85rem;">
+                            <li>✓ 10K+ GitHub stars</li>
+                            <li>✓ Used by 500+ servers</li>
+                            <li>✓ Active community support</li>
+                        </ul>
+                    </div>
+                    <div class="skill-tags">
+                        <span class="tag">Java</span><span class="tag">Open Source</span><span class="tag">Framework</span><span class="tag">GitHub</span>
+                    </div>
+                </div>
+
+                <div class="skill-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Analytics Dashboard</h3>
+                    <p class="skill-desc">Real-time analytics platform untuk monitoring server performance, player behavior, dan revenue metrics.</p>
+                    <p style="font-size: 0.9rem; color: var(--text-dim); margin-bottom: 15px;">Advanced analytics solution dengan real-time data processing dan beautiful data visualization. Membantu bisnis gaming membuat data-driven decisions dengan confidence.</p>
+                    <div style="background: rgba(0, 255, 136, 0.05); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                        <p style="font-size: 0.85rem; color: var(--text-dimmer); margin-bottom: 8px;"><strong>Features:</strong></p>
+                        <ul style="list-style: none; color: var(--text-dim); font-size: 0.85rem;">
+                            <li>✓ Real-time metrics & KPIs</li>
+                            <li>✓ Predictive analytics AI</li>
+                            <li>✓ Custom report generation</li>
+                        </ul>
+                    </div>
+                    <div class="skill-tags">
+                        <span class="tag">React</span><span class="tag">D3.js</span><span class="tag">PostgreSQL</span><span class="tag">WebSocket</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CERTIFICATIONS & ACHIEVEMENTS -->
+        <section style="padding: 120px 0;">
+            <h2 class="section-title">Certifications & <span>Achievements</span></h2>
+            <div class="about-detailed">
+                <div class="detail-card">
+                    <h3><i class="fas fa-certificate"></i> Advanced Java Architecture</h3>
+                    <p style="color: var(--secondary); font-weight: 600; margin-bottom: 10px;">Oracle Certified Associate Java Programmer</p>
+                    <p>Sertifikasi yang memvalidasi keahlian dalam Java programming, object-oriented principles, dan architecture design patterns.</p>
+                    <p style="font-size: 0.9rem; color: var(--text-dimmer); margin-top: 10px;">Issued: 2022</p>
+                </div>
+
+                <div class="detail-card">
+                    <h3><i class="fas fa-certificate"></i> AWS Cloud Architecture</h3>
+                    <p style="color: var(--secondary); font-weight: 600; margin-bottom: 10px;">AWS Solutions Architect Associate</p>
+                    <p>Sertifikasi untuk mendesain dan deploy aplikasi scalable, highly available, dan cost-effective di AWS platform.</p>
+                    <p style="font-size: 0.9rem; color: var(--text-dimmer); margin-top: 10px;">Issued: 2023</p>
+                </div>
+
+                <div class="detail-card">
+                    <h3><i class="fas fa-award"></i> Performance Expert</h3>
+                    <p style="color: var(--secondary); font-weight: 600; margin-bottom: 10px;">Award untuk Best Performance Optimization</p>
+                    <p>Penghargaan dari industri gaming untuk kontribusi exceptional dalam mengoptimalkan server performance mencapai 20/20 TPS.</p>
+                    <p style="font-size: 0.9rem; color: var(--text-dimmer); margin-top: 10px;">Awarded: 2024</p>
+                </div>
+
+                <div class="detail-card">
+                    <h3><i class="fas fa-star"></i> Open Source Contributor</h3>
+                    <p style="color: var(--secondary); font-weight: 600; margin-bottom: 10px;">GitHub Featured Developer</p>
+                    <p>Diakui sebagai kontributor active dalam ecosystem open source dengan multiple popular projects dan thousands of stars.</p>
+                    <p style="font-size: 0.9rem; color: var(--text-dimmer); margin-top: 10px;">2021 - Present</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer id="contact">
+        <div style="margin-bottom: 40px;">
+            <h2 style="font-family: var(--font-heading); font-size: 2.5rem; margin-bottom: 20px;">Let's <span style="color: var(--primary);">Connect</span></h2>
+            <p style="color: var(--text-dim); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">Saya selalu terbuka untuk diskusi tentang teknologi, proyek menarik, atau peluang kolaborasi. Hubungi saya melalui salah satu channel di bawah.</p>
+        </div>
+        <div class="social-links">
+            <a href="https://github.com" title="GitHub"><i class="fab fa-github"></i></a>
+            <a href="https://discord.gg" title="Discord"><i class="fab fa-discord"></i></a>
+            <a href="https://instagram.com" title="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="mailto:hello@devcraft.dev" title="Email"><i class="fas fa-envelope"></i></a>
+        </div>
+        <p style="margin-top: 50px; color: var(--text-dim);">&copy; 2026 Developer Elite. All Systems Operational. <br> Crafted for Excellence.</p>
+    </footer>
+
+    <script>
+        // --- SPACE BACKGROUND WITH FLOATING ASTRONAUT ---
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x050510); // Dark space color
+        
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 2, 15);
+        
+        const renderer = new THREE.WebGLRenderer({ 
+            canvas: document.getElementById('bg-canvas'),
+            antialias: true,
+            alpha: false
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0x404060);
+        scene.add(ambientLight);
+        
+        const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+        dirLight.position.set(5, 10, 7);
+        scene.add(dirLight);
+        
+        const pointLight = new THREE.PointLight(0x4466ff, 1, 30);
+        pointLight.position.set(-3, 5, 5);
+        scene.add(pointLight);
+        
+        // Create stars
+        const starsGeometry = new THREE.BufferGeometry();
+        const starsCount = 2000;
+        const starsPositions = new Float32Array(starsCount * 3);
+        
+        for (let i = 0; i < starsCount * 3; i += 3) {
+            starsPositions[i] = (Math.random() - 0.5) * 200;
+            starsPositions[i + 1] = (Math.random() - 0.5) * 200;
+            starsPositions[i + 2] = (Math.random() - 0.5) * 200;
+        }
+        
+        starsGeometry.setAttribute('position', new THREE.BufferAttribute(starsPositions, 3));
+        
+        const starsMaterial = new THREE.PointsMaterial({
+            color: 0xffffff,
+            size: 0.2,
+            transparent: true,
+            opacity: 0.8
+        });
+        
+        const stars = new THREE.Points(starsGeometry, starsMaterial);
+        scene.add(stars);
+        
+        // Create astronaut using primitive shapes
+        const astronautGroup = new THREE.Group();
+        
+        // Helmet (sphere)
+        const helmetGeo = new THREE.SphereGeometry(1, 32, 32);
+        const helmetMat = new THREE.MeshStandardMaterial({ 
+            color: 0x88aaff,
+            emissive: 0x112244,
+            transparent: true,
+            opacity: 0.9,
+            shininess: 30
+        });
+        const helmet = new THREE.Mesh(helmetGeo, helmetMat);
+        helmet.position.y = 1.5;
+        helmet.scale.set(1.2, 1.2, 1.2);
+        astronautGroup.add(helmet);
+        
+        // Visor (glass part)
+        const visorGeo = new THREE.SphereGeometry(0.8, 16, 16);
+        const visorMat = new THREE.MeshStandardMaterial({ 
+            color: 0x66ccff,
+            emissive: 0x224466,
+            transparent: true,
+            opacity: 0.4,
+            shininess: 100
+        });
+        const visor = new THREE.Mesh(visorGeo, visorMat);
+        visor.position.set(0, 1.5, 0.8);
+        visor.scale.set(1.1, 0.8, 0.4);
+        astronautGroup.add(visor);
+        
+        // Body (cylinder)
+        const bodyGeo = new THREE.CylinderGeometry(0.8, 0.8, 2, 8);
+        const bodyMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
+        const body = new THREE.Mesh(bodyGeo, bodyMat);
+        body.position.y = 0;
+        astronautGroup.add(body);
+        
+        // Backpack (box)
+        const backpackGeo = new THREE.BoxGeometry(1.2, 1.5, 0.8);
+        const backpackMat = new THREE.MeshStandardMaterial({ color: 0xaaaaaa });
+        const backpack = new THREE.Mesh(backpackGeo, backpackMat);
+        backpack.position.set(0, 0.5, -0.8);
+        astronautGroup.add(backpack);
+        
+        // Arms
+        const armGeo = new THREE.CylinderGeometry(0.3, 0.3, 1.2, 6);
+        const armMat = new THREE.MeshStandardMaterial({ color: 0xeeeeee });
+        
+        // Left arm
+        const leftArm = new THREE.Mesh(armGeo, armMat);
+        leftArm.position.set(-1, 0.3, 0);
+        leftArm.rotation.z = 0.2;
+        leftArm.rotation.x = 0.3;
+        astronautGroup.add(leftArm);
+        
+        // Right arm
+        const rightArm = new THREE.Mesh(armGeo, armMat);
+        rightArm.position.set(1, 0.3, 0);
+        rightArm.rotation.z = -0.2;
+        rightArm.rotation.x = -0.3;
+        astronautGroup.add(rightArm);
+        
+        // Legs
+        const legGeo = new THREE.CylinderGeometry(0.4, 0.4, 1.2, 6);
+        const legMat = new THREE.MeshStandardMaterial({ color: 0xdddddd });
+        
+        // Left leg
+        const leftLeg = new THREE.Mesh(legGeo, legMat);
+        leftLeg.position.set(-0.5, -1.2, 0);
+        leftLeg.rotation.x = 0.1;
+        astronautGroup.add(leftLeg);
+        
+        // Right leg
+        const rightLeg = new THREE.Mesh(legGeo, legMat);
+        rightLeg.position.set(0.5, -1.2, 0);
+        rightLeg.rotation.x = -0.1;
+        astronautGroup.add(rightLeg);
+        
+        // Position the astronaut
+        astronautGroup.position.set(4, 1, -10);
+        astronautGroup.scale.set(0.5, 0.5, 0.5);
+        
+        scene.add(astronautGroup);
+        
+        // Create some floating space rocks/debris
+        const debrisGroup = new THREE.Group();
+        
+        for (let i = 0; i < 20; i++) {
+            const rockGeo = new THREE.DodecahedronGeometry(0.2 + Math.random() * 0.3);
+            const rockMat = new THREE.MeshStandardMaterial({ 
+                color: 0x886644,
+                emissive: 0x332211
+            });
+            const rock = new THREE.Mesh(rockGeo, rockMat);
+            
+            rock.position.set(
+                (Math.random() - 0.5) * 20,
+                (Math.random() - 0.5) * 15,
+                (Math.random() - 0.5) * 20 - 10
+            );
+            
+            rock.rotation.set(
+                Math.random() * Math.PI,
+                Math.random() * Math.PI,
+                Math.random() * Math.PI
+            );
+            
+            rock.userData = {
+                speed: 0.001 + Math.random() * 0.003,
+                rotSpeed: (Math.random() - 0.5) * 0.02
+            };
+            
+            debrisGroup.add(rock);
+        }
+        
+        scene.add(debrisGroup);
+        
+        // Animation variables
+        let time = 0;
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            time += 0.01;
+            
+            // Rotate stars slowly
+            stars.rotation.y += 0.0001;
+            
+            // Floating astronaut animation
+            astronautGroup.position.y = 1 + Math.sin(time * 0.5) * 0.5;
+            astronautGroup.rotation.y += 0.005;
+            astronautGroup.rotation.x = Math.sin(time * 0.3) * 0.1;
+            astronautGroup.rotation.z = Math.cos(time * 0.4) * 0.1;
+            
+            // Move astronaut in a circular path
+            astronautGroup.position.x = 4 + Math.sin(time * 0.2) * 3;
+            astronautGroup.position.z = -8 + Math.cos(time * 0.2) * 3;
+            
+            // Animate debris
+            debrisGroup.children.forEach(rock => {
+                rock.rotation.x += rock.userData.rotSpeed;
+                rock.rotation.y += rock.userData.rotSpeed * 0.5;
+                
+                // Slow drift
+                rock.position.x += Math.sin(time + rock.position.y) * 0.001;
+                rock.position.y += Math.cos(time + rock.position.x) * 0.001;
+            });
+            
+            renderer.render(scene, camera);
+        }
+        
+        animate();
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+        
+        // --- TYPEWRITER ANIMATION FOR TERMINAL ---
+        const terminalLines = [
+            "root@galaxy-server:~# Initializing hyper-speed warp...",
+            "root@galaxy-server:~# Connection: galaxy-node-1.net [SECURE]",
+            "root@galaxy-server:~# Loading Java 21 & Web3D Modules...",
+            "root@galaxy-server:~# Optimizing Server TPS... [20.0/20.0]",
+            "root@galaxy-server:~# Building Landing Page UI/UX...",
+            "root@galaxy-server:~# System Status: EXCELLENT",
+            "root@galaxy-server:~# Ready to serve the universe.",
+            "root@galaxy-server:~# Awaiting your commands..."
+        ];
+
+        const typewriterElement = document.getElementById('typewriter');
+        let lineIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        let currentLine = '';
+
+        function typeWriter() {
+            if (lineIndex < terminalLines.length) {
+                const fullLine = terminalLines[lineIndex];
+                
+                if (!isDeleting) {
+                    currentLine = fullLine.substring(0, charIndex + 1);
+                    charIndex++;
+                    
+                    if (charIndex === fullLine.length) {
+                        isDeleting = true;
+                        setTimeout(typeWriter, 2000);
+                        return;
+                    }
+                } else {
+                    currentLine = fullLine.substring(0, charIndex - 1);
+                    charIndex--;
+                    
+                    if (charIndex === 0) {
+                        isDeleting = false;
+                        lineIndex++;
+                        if (lineIndex === terminalLines.length) {
+                            lineIndex = 0;
+                        }
+                    }
+                }
+                
+                // Create HTML with lines
+                let html = '';
+                for (let i = 0; i < lineIndex; i++) {
+                    html += `<div>${terminalLines[i]}</div>`;
+                }
+                html += `<div>${currentLine}<span class="terminal-cursor"></span></div>`;
+                
+                typewriterElement.innerHTML = html;
+                
+                const speed = isDeleting ? 50 : 100;
+                setTimeout(typeWriter, speed);
+            }
+        }
+
+        // Start the animation
+        typeWriter();
+    </script>
+</body>
+</html>
