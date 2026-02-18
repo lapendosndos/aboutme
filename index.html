@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lapendos – Development</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Portfolio ir. Lapendos Dev. – Server Developer & Kanacloud, Cloud Planner." />
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #020617;
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --accent: #38bdf8;
+      --accent-2: #a855f7;
+      --card-bg: rgba(15, 23, 42, 0.9);
+      --border-soft: rgba(148, 163, 184, 0.4);
+      --shadow: 0 24px 60px rgba(15, 23, 42, 0.9);
+      --radius-lg: 1.2rem;
+      --radius-xl: 1.8rem;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    .bg-gradient {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.25), transparent 60%),
+                  radial-gradient(circle at top right, rgba(168, 85, 247, 0.25), transparent 55%),
+                  radial-gradient(circle at bottom, rgba(59, 130, 246, 0.3), transparent 65%);
+      filter: blur(0);
+      animation: gradientShift 18s ease-in-out infinite alternate;
+      z-index: -3;
+    }
+
+    .bg-noise {
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='noStitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.18'/%3E%3C/svg%3E");
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+      z-index: -2;
+    }
+
+    .parallax-layer {
+      position: fixed;
+      border-radius: 999px;
+      filter: blur(30px);
+      opacity: 0.7;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .layer-1 {
+      width: 260px;
+      height: 260px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.9), transparent);
+      top: 8%;
+      left: 10%;
+    }
+
+    .layer-2 {
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.85), transparent);
+      top: 30%;
+      right: 8%;
+    }
+
+    .layer-3 {
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(34, 197, 94, 0.7), transparent);
+      bottom: 8%;
+      left: 18%;
+    }
+
+    .page {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 1.25rem 1.25rem 4rem;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1.5rem;
+      max-width: 1120px;
+      margin: 0 auto 0.5rem;
+      backdrop-filter: blur(18px);
+      background: linear-gradient(to bottom, rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.7));
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      border-radius: 999px;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: radial-gradient(circle, #22c55e, #16a34a);
+      box-shadow: 0 0 14px rgba(34, 197, 94, 0.9);
+    }
+
+    .logo-text {
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      color: #e5e7eb;
+    }
+
+    .nav-right {
+      display: flex;
+      gap: 1.3rem;
+      font-size: 0.85rem;
+    }
+
+    .nav-right a {
+      color: var(--text-muted);
+      text-decoration: none;
+      position: relative;
+      padding-bottom: 0.1rem;
+      transition: color 160ms ease-out;
+    }
+
+    .nav-right a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -0.18rem;
+      height: 2px;
+      width: 0;
+      border-radius: 999px;
+      background: linear-gradient(to right, var(--accent), var(--accent-2));
+      transition: width 160ms ease-out;
+    }
+
+    .nav-right a:hover {
+      color: var(--text-main);
+    }
+
+    .nav-right a:hover::after {
+      width: 100%;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.4fr);
+      gap: 2.2rem;
+      align-items: center;
+      padding: 2.5rem 0 2rem;
+    }
+
+    .hero-kicker {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.3rem, 3vw + 1.3rem, 3.4rem);
+      line-height: 1.15;
+      margin-bottom: 0.6rem;
+    }
+
+    .accent {
+      background: linear-gradient(to right, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .typing-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.3rem;
+    }
+
+    .typing {
+      font-size: 1.1rem;
+      font-weight: 500;
+      min-height: 1.4rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 8px;
+      height: 1.1em;
+      margin-left: 2px;
+      background: var(--accent);
+      border-radius: 2px;
+      animation: blink 0.8s steps(1) infinite;
+    }
+
+    .hero-subtitle {
+      color: var(--text-muted);
+      max-width: 600px;
+      margin-bottom: 1.2rem;
+      font-size: 0.95rem;
+    }
+
+    .hero-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-bottom: 1rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.6rem 1.4rem;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      text-decoration: none;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: transform 150ms ease-out, box-shadow 150ms ease-out,
+                  background 150ms ease-out, border-color 150ms ease-out, color 150ms ease-out;
+    }
+
+    .btn.primary {
+      background: linear-gradient(to right, var(--accent), var(--accent-2));
+      color: #020617;
+      box-shadow: 0 16px 40px rgba(56, 189, 248, 0.5);
+    }
+
+    .btn.primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 24px 60px rgba(56, 189, 248, 0.7);
+    }
+
+    .btn.ghost {
+      background: rgba(15, 23, 42, 0.9);
+      border-color: rgba(148, 163, 184, 0.6);
+      color: var(--text-main);
+    }
+
+    .btn.ghost:hover {
+      border-color: var(--accent);
+      background: rgba(15, 23, 42, 0.96);
+      transform: translateY(-1px);
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      font-size: 0.8rem;
+    }
+
+    .hero-tags span {
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-muted);
+    }
+
+    .hero-orbit {
+      position: relative;
+    }
+
+    .orbit-card {
+      position: relative;
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.3), transparent 55%),
+                  radial-gradient(circle at bottom right, rgba(168, 85, 247, 0.3), transparent 65%),
+                  var(--card-bg);
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      padding: 1.4rem 1.5rem;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .orbit-title {
+      font-size: 0.75rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(226, 232, 240, 0.9);
+      margin-bottom: 0.3rem;
+    }
+
+    .orbit-card h2 {
+      font-size: 1.2rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .orbit-card ul {
+      list-style: none;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .orbit-card li {
+      position: relative;
+      padding-left: 1.1rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .orbit-card li::before {
+      content: "";
+      position: absolute;
+      left: 0.3rem;
+      top: 0.6rem;
+      width: 4px;
+      height: 4px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .orbit-badge {
+      position: absolute;
+      right: -0.5rem;
+      top: -0.5rem;
+      background: rgba(15, 23, 42, 0.98);
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.7);
+      padding: 0.35rem 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 14px rgba(34, 197, 94, 1);
+    }
+
+    .section {
+      margin-top: 2.7rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .section-header h2 {
+      font-size: 1.4rem;
+    }
+
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, rgba(148, 163, 184, 0.7), transparent);
+    }
+
+    .section-text {
+      color: var(--text-muted);
+      max-width: 720px;
+      font-size: 0.95rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .cards-grid {
+      margin-top: 1.2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.4rem;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.2), transparent 60%),
+                  var(--card-bg);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-soft);
+      padding: 1.15rem 1.25rem;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      transition: transform 160ms ease-out, box-shadow 160ms ease-out,
+                  border-color 160ms ease-out, background 160ms ease-out;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: -30%;
+      background: conic-gradient(from 180deg, rgba(56, 189, 248, 0.15), transparent,
+                  rgba(168, 85, 247, 0.15), transparent);
+      opacity: 0;
+      transition: opacity 260ms ease-out;
+      pointer-events: none;
+    }
+
+    .card:hover::after {
+      opacity: 1;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.6rem;
+      margin-bottom: 0.4rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-header h3 {
+      font-size: 1rem;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      padding: 0.1rem 0.6rem;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.12);
+      color: #bae6fd;
+      border: 1px solid rgba(56, 189, 248, 0.8);
+    }
+
+    .badge.alt {
+      background: rgba(129, 140, 248, 0.18);
+      color: #c7d2fe;
+      border-color: rgba(129, 140, 248, 0.9);
+    }
+
+    .card-meta {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-text {
+      font-size: 0.9rem;
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-list {
+      list-style: none;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-list li {
+      position: relative;
+      padding-left: 0.9rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .card-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0.25rem;
+      top: 0;
+      color: var(--accent);
+    }
+
+    .skills-grid {
+      margin-top: 1.1rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .skill-card {
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-soft);
+      padding: 1rem 1.1rem;
+      box-shadow: var(--shadow);
+    }
+
+    .skill-card h3 {
+      font-size: 0.95rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .skill-card ul {
+      list-style: none;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .skill-card li {
+      margin-bottom: 0.25rem;
+    }
+
+    .contact-grid {
+      margin-top: 1.1rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .contact-card {
+      border-radius: var(--radius-lg);
+      padding: 1.1rem 1.2rem;
+      border: 1px solid var(--border-soft);
+      background: rgba(15, 23, 42, 0.95);
+      box-shadow: var(--shadow);
+      font-size: 0.9rem;
+      color: var(--text-main);
+    }
+
+    .contact-card ul {
+      margin-top: 0.4rem;
+      list-style: none;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .contact-card li {
+      margin-bottom: 0.3rem;
+    }
+
+    .footer {
+      margin-top: 3rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid rgba(30, 64, 175, 0.7);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .glass {
+      backdrop-filter: blur(14px);
+    }
+
+    .floating {
+      animation: float 5.5s ease-in-out infinite;
+    }
+
+    .floating-slow {
+      animation: float 9s ease-in-out infinite;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 600ms ease-out, transform 600ms ease-out;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .fade-up.visible {
+      transform: translateY(0);
+    }
+
+    .fade-right {
+      transform: translateX(-16px);
+    }
+
+    .fade-right.visible {
+      transform: translateX(0);
+    }
+
+    .fade-left {
+      transform: translateX(16px);
+    }
+
+    .fade-left.visible {
+      transform: translateX(0);
+    }
+
+    .fade-down {
+      transform: translateY(-12px);
+    }
+
+    .fade-down.visible {
+      transform: translateY(0);
+    }
+
+    .tilt {
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    @keyframes gradientShift {
+      0% { transform: translate3d(0, 0, 0) scale(1); }
+      50% { transform: translate3d(-10px, 10px, 0) scale(1.05); }
+      100% { transform: translate3d(12px, -12px, 0) scale(1.02); }
+    }
+
+    @keyframes blink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate3d(0, 0, 0); }
+      50% { transform: translate3d(0, -10px, 0); }
+    }
+
+    .monitor-grid {
+      margin-top: 1.2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .monitor-card {
+      padding: 1.3rem 1.4rem;
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      background: rgba(15, 23, 42, 0.85);
+      border-radius: 1.3rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .monitor-card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .monitor-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.8rem;
+    }
+
+    .monitor-card.ops-overview {
+      grid-column: span 2;
+    }
+
+    .monitor-kpi-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.8rem;
+    }
+
+    .monitor-kpi-row.small .kpi strong {
+      font-size: 0.8rem;
+    }
+
+    .kpi {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .kpi span {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .kpi strong {
+      font-size: 1rem;
+      color: var(--accent);
+    }
+
+    .chart-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+    }
+
+    .chart-card {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 0.6rem;
+      border-radius: 0.8rem;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+    }
+
+    .chart-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-bottom: 0.2rem;
+    }
+
+    .proxmox-anim {
+      position: relative;
+      width: 100%;
+      height: 140px;
+    }
+
+    .node {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      background: #38bdf8;
+      position: absolute;
+      animation: float-node 3s ease-in-out infinite;
+    }
+
+    .node1 { top: 20%; left: 20%; animation-delay: 0s; }
+    .node2 { top: 60%; left: 50%; animation-delay: 0.4s; }
+    .node3 { top: 30%; right: 20%; animation-delay: 0.8s; }
+
+    .link-1,
+    .link-2,
+    .link-3 {
+      position: absolute;
+      width: 2px;
+      background: rgba(56,189,248,0.6);
+    }
+
+    .link-1 { left: 28%; top: 28%; height: 40%; }
+    .link-2 { left: 55%; top: 25%; height: 45%; }
+    .link-3 { left: 50%; top: 55%; width: 40%; height: 2px; }
+
+    #cluster-nodes li {
+      margin-bottom: 0.3rem;
+      font-size: 0.85rem;
+    }
+
+    .ptero-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .ptero-pill {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(56,189,248,0.3);
+      padding: 0.35rem 0.6rem;
+      border-radius: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.8rem;
+      color: var(--text-main);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .dot.online { background: #22c55e; box-shadow: 0 0 8px #22c55e; }
+    .dot.offline { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
+    .dot.node { background: #38bdf8; box-shadow: 0 0 8px #38bdf8; }
+
+    .terminal {
+      background: rgba(0,0,0,0.35);
+      border-radius: 1rem;
+      overflow: hidden;
+      border: 1px solid rgba(56,189,248,0.25);
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.4);
+    }
+
+    .terminal-header {
+      background: rgba(15,23,42,0.9);
+      padding: 0.4rem 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .term-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+    }
+
+    .term-dot.red { background: #ef4444; }
+    .term-dot.yellow { background: #facc15; }
+    .term-dot.green { background: #22c55e; }
+
+    .term-title {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-left: 0.5rem;
+    }
+
+    .terminal-body {
+      padding: 0.7rem;
+      height: 200px;
+      overflow-y: auto;
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: #e2e8f0;
+      line-height: 1.3rem;
+    }
+
+    .term-line {
+      margin-bottom: 2px;
+      white-space: pre-wrap;
+    }
+
+    @keyframes moveLine {
+      0% { transform: translateX(-20%); }
+      100% { transform: translateX(20%); }
+    }
+
+    @keyframes moveLine2 {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(40%); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.5); opacity: 0.3; }
+    }
+
+    @keyframes float-node {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+
+    @media (max-width: 900px) {
+      .monitor-card.ops-overview {
+        grid-column: span 1;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+      .hero-orbit {
+        order: -1;
+      }
+      .nav-right {
+        display: none;
+      }
+      .nav {
+        padding-inline: 1rem;
+      }
+      .page {
+        padding-inline: 1rem;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .hero {
+        padding-top: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-gradient"></div>
+  <div class="bg-noise"></div>
+  <div class="parallax-layer layer-1" data-depth="0.05"></div>
+  <div class="parallax-layer layer-2" data-depth="0.12"></div>
+  <div class="parallax-layer layer-3" data-depth="0.2"></div>
+
+  <header class="nav reveal fade-down">
+    <div class="nav-left">
+      <span class="logo-dot"></span>
+      <span class="logo-text">Developer</span>
+    </div>
+    <nav class="nav-right">
+      <a href="#about">About</a>
+      <a href="#experience">Experience</a>
+      <a href="#skills">Skills</a>
+      <a href="#monitoring">Monitoring</a>
+      <a href="#education">Education</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main class="page">
+    <section class="hero">
+      <div class="hero-text reveal fade-up">
+        <p class="hero-kicker">SERVER • MINECRAFT</p>
+        <h1>
+          Hi, saya
+          <span class="accent">ir. Lapendos<br>Developer Server Minecraft</span>
+        </h1>
+
+        <p class="typing-label">Saya adalah</p>
+        <p class="typing">
+          <span id="typing-text"></span>
+          <span class="cursor"></span>
+        </p>
+
+        <p class="hero-subtitle">
+          Fokus di <b>server development</b>. Terbiasa
+          mengelola Panel, VPS, hosting, dan fokus ke stabilitas & performa.
+        </p>
+
+        <div class="hero-buttons">
+          <a href="#experience" class="btn primary">Lihat Pengalaman</a>
+          <a href="#skills" class="btn ghost">Skills Teknis</a>
+        </div>
+
+        <div class="hero-tags">
+          <span>Server Developer</span>
+          <span>Technician</span>
+
+        </div>
+      </div>
+
+      <div class="hero-orbit reveal fade-left">
+        <div class="orbit-card floating tilt">
+          <p class="orbit-title">Current Focus</p>
+          <h2>Server Development</h2>
+          <ul>
+            <li>Termux & performa tinggi</li>
+            <li>Firewall</li>
+            <li>Skills Developer</li>
+          </ul>
+        </div>
+        <div class="orbit-badge floating-slow">
+          <span class="status-dot"></span>
+          <span>Hyper-Speed Development Active</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="section reveal fade-right">
+      <div class="section-header">
+        <h2>About Me</h2>
+        <div class="section-line"></div>
+      </div>
+      <p class="section-text">
+        Saya adalah seorang <b>Developer Server</b> yang terbiasa bekerja dengan orang orang, serta infrastruktur
+        Saya juga memiliki pengalaman yang dimana sebagai
+        Developer dan Technician di <b>Server Publik</b> dan
+        <b>Kanacloud 3.5 | Refinement</b>, menggabungkan pemahaman teknis dan
+        skills.
+      </p>
+      <p class="section-text">
+        Kombinasi kemampuan teknis (server, security) dan
+        <b>operational management</b> membuat saya mampu meng-handle project
+        end-to-end: mulai dari perencanaan arsitektur, eksekusi, otomasi,
+        sampai monitoring performa dan efisiensi biaya.
+      </p>
+    </section>
+
+    <section id="experience" class="section">
+      <div class="section-header reveal fade-left">
+        <h2>Experience</h2>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="cards-grid">
+        <article class="card glass tilt reveal fade-up">
+          <div class="card-header">
+            <h3>Hostingan</h3>
+            <span class="badge">Newbie</span>
+          </div>
+          <p class="card-meta">Pelajar & Belajar</p>
+          <p class="card-text">
+            Awal awal saya mengenal <b>Developer</b>
+            saya belajar dan ikut ikut dengan orang lain,
+            belajar dan belajar dengan berbagai cara.
+          </p>
+          <ul class="card-list">
+            <li>Tiktok.</li>
+            <li>Youtube.</li>
+          </ul>
+        </article>
+
+        <article class="card glass tilt reveal fade-up">
+          <div class="card-header">
+            <h3>Terra Network</h3>
+            <span class="badge alt">Operation</span>
+          </div>
+          <p class="card-meta">Operator & Code</p>
+          <p class="card-text">
+            Menjadi operator dan membantu menyeting, nyetup
+            menambahkan fiture fiture dan mendapat kepercayaan oleh
+            seorang Owner.
+          </p>
+          <ul class="card-list">
+            <li>Plugins.</li>
+            <li>Config.</li>
+            <li>Deffend.</li>
+          </ul>
+        </article>
+
+        <article class="card glass tilt reveal fade-up">
+          <div class="card-header">
+            <h3>Kanacloud 3.5 | Refinement</h3>
+            <span class="badge">Magang</span>
+          </div>
+          <p class="card-meta">Help & Backup</p>
+          <p class="card-text">
+            Ikut ber partisipasi di store Kanacloud
+            membantu dan membackup setiap
+            member & performance.
+          </p>
+          <ul class="card-list">
+            <li>Manage Hosting & Private</li>
+            <li>Manage VPS, dan Pterodactyl environment.</li>
+            <li>Optimasi performa berdasarkan profil user.</li>
+          </ul>
+        </article>
+
+        <article class="card glass tilt reveal fade-up">
+          <div class="card-header">
+            <h3>Voxen SMP</h3>
+            <span class="badge alt">Developer</span>
+          </div>
+          <p class="card-meta">Freelance & Project</p>
+          <p class="card-text">
+            Menangani project server & network untuk kebutuhan
+            membantu, men nyetup
+            membutuhkan kestabilan tinggi.
+          </p>
+          <ul class="card-list">
+            <li>Setup & tuning server beban tinggi.</li>
+            <li>Konfigurasi <b>Config</b> & <b>Skript</b>.</li>
+            <li>Implementasi <b>Plugins</b> custom rule.</li>
+            <li>Etc.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section id="skills" class="section">
+      <div class="section-header reveal fade-right">
+        <h2>Skills</h2>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="skills-grid">
+        <div class="skill-card tilt floating-slow reveal fade-up">
+          <h3>Backend & Database</h3>
+          <ul>
+            <li>PHP (REST API, backend web)</li>
+            <li>MySQL (query, indexing dasar, schema design)</li>
+          </ul>
+        </div>
+
+        <div class="skill-card tilt floating-slow reveal fade-up">
+          <h3>Server & Networking</h3>
+          <ul>
+            <li>Server Administration</li>
+            <li>iptables (firewall, DDoS filter)</li>
+            <li>MikroTik CHR (routing, firewall, QoS dasar)</li>
+            <li>DDoS Protect Filter (custom rules & mitigasi)</li>
+          </ul>
+        </div>
+
+        <div class="skill-card tilt floating-slow reveal fade-up">
+          <h3>Cloud & Platform</h3>
+          <ul>
+            <li>Cloud Planner (Kanacloud)</li>
+            <li>Resource planning (CPU/RAM/disk)</li>
+            <li>Deployment app di Pterodactyl</li>
+          </ul>
+        </div>
+
+        <div class="skill-card tilt floating-slow reveal fade-up">
+          <h3>Operation & Website</h3>
+          <ul>
+            <li>Operator in Server</li>
+            <li>Basic Skills</li>
+            <li>Html</li>
+            <li>Css</li>
+            <li>Js</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="monitoring" class="section reveal fade-up">
+      <div class="section-header">
+        <h2>Monitoring & Ops Center</h2>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="monitor-grid">
+        <div class="monitor-card ops-overview glass tilt floating reveal fade-up">
+          <h3>Ops Overview</h3>
+          <p class="monitor-sub">
+            Live metrics (simulasi) CPU, RAM, Disk, dan Network traffic.
+          </p>
+
+          <div class="monitor-kpi-row">
+            <div class="kpi">
+              <span>CPU Load</span>
+              <strong id="cpu-val">-- %</strong>
+            </div>
+            <div class="kpi">
+              <span>Memory Used</span>
+              <strong id="ram-val">-- %</strong>
+            </div>
+            <div class="kpi">
+              <span>Disk Usage</span>
+              <strong id="disk-val">-- %</strong>
+            </div>
+          </div>
+
+          <div class="chart-row">
+            <div class="chart-card">
+              <p class="chart-label">CPU</p>
+              <canvas id="cpuChart" height="100"></canvas>
+            </div>
+            <div class="chart-card">
+              <p class="chart-label">RAM</p>
+              <canvas id="ramChart" height="100"></canvas>
+            </div>
+            <div class="chart-card">
+              <p class="chart-label">Network</p>
+              <canvas id="netChart" height="100"></canvas>
+            </div>
+          </div>
+
+          <div class="monitor-kpi-row small">
+            <div class="kpi">
+              <span>Net In</span>
+              <strong id="net-in-val">-- kbit/s</strong>
+            </div>
+            <div class="kpi">
+              <span>Net Out</span>
+              <strong id="net-out-val">-- kbit/s</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="monitor-card glass tilt floating-slow reveal fade-up">
+          <h3>Proxmox VE Cluster</h3>
+          <p class="monitor-sub">
+            Node status, load, & cluster health (simulasi).
+          </p>
+
+          <div class="monitor-preview proxmox-anim">
+            <div class="node node1"></div>
+            <div class="node node2"></div>
+            <div class="node node3"></div>
+            <div class="link-1"></div>
+            <div class="link-2"></div>
+            <div class="link-3"></div>
+          </div>
+
+          <ul class="monitor-list" id="cluster-nodes">
+            <li>Loading cluster data...</li>
+          </ul>
+        </div>
+
+        <div class="monitor-card glass tilt floating-slow reveal fade-up">
+          <h3>Pterodactyl Panel</h3>
+          <p class="monitor-sub">
+            Simulasi node & server status untuk lingkungan panel.
+          </p>
+
+          <div class="ptero-stats">
+            <div class="ptero-pill">
+              <span class="dot online"></span>
+              <span>Running</span>
+              <strong id="ptero-running">--</strong>
+            </div>
+            <div class="ptero-pill">
+              <span class="dot offline"></span>
+              <span>Offline</span>
+              <strong id="ptero-offline">--</strong>
+            </div>
+            <div class="ptero-pill">
+              <span class="dot node"></span>
+              <span>Nodes</span>
+              <strong id="ptero-nodes">--</strong>
+            </div>
+          </div>
+
+          <p class="monitor-sub">
+            Network usage: <strong id="ptero-net">-- kbit/s</strong>
+          </p>
+
+          <ul class="monitor-list">
+            <li>Deploy & scaling container-based game server.</li>
+            <li>Limitasi resource per server (CPU, RAM, disk, net).</li>
+            <li>Pengaturan node & balancing ringan.</li>
+          </ul>
+        </div>
+
+        <div class="monitor-card ops-overview glass tilt floating reveal fade-up">
+          <h3>Ops Terminal</h3>
+          <p class="monitor-sub">
+            Simulasi aktivitas terminal: monitoring & maintenance rutin.
+          </p>
+
+          <div class="terminal">
+            <div class="terminal-header">
+              <span class="term-dot red"></span>
+              <span class="term-dot yellow"></span>
+              <span class="term-dot green"></span>
+              <span class="term-title">Pepen@ops:~</span>
+            </div>
+            <div class="terminal-body" id="terminal-content">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="education" class="section reveal fade-left">
+      <div class="section-header">
+        <h2>Education</h2>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="card glass big tilt">
+        <div class="card-header">
+          <h3>Otodidak</h3>
+          <span class="badge">2022 – 2026</span>
+        </div>
+        <p class="card-meta">ir. Developer</p>
+        <p class="card-text">
+          Belajar kombinasi <b>teknologi informasi</b> dan <b>manajemen</b>,
+          mulai dari pemrograman, basis data, hingga konsep bisnis & proses
+          manajerial. Membantu saya melihat sistem tidak hanya dari sisi
+          teknis, tapi juga dari <b>value bisnis</b>.
+        </p>
+      </div>
+    </section>
+
+    <section id="contact" class="section reveal fade-up">
+      <div class="section-header">
+        <h2>Contact</h2>
+        <div class="section-line"></div>
+      </div>
+
+      <p class="section-text">
+        Tertarik kerja sama atau butuh bantuan untuk setup / optimasi server? Silakan hubungi saya.
+      </p>
+
+      <div class="contact-grid">
+        <div class="contact-card glass tilt">
+          <h3>What I Do</h3>
+          <ul>
+            <li>Setup & hardening server (Hosting, VPS, Private).</li>
+            <li>Panel game & Pterodactyl environment.</li>
+            <li>Convert & resource optimization.</li>
+            <li>Firewall & Protect.</li>
+          </ul>
+        </div>
+        <div class="contact-card glass tilt">
+          <h3>Reach Me</h3>
+          <p>ir. Lapendos Dev.</p>
+          <ul>
+            <li><b>Email:</b> ta3526773@gmail.com@gmail.com</li>
+            <li><b>WhatsApp:</b> +6283842290175</li>
+            <li><b>GitHub:</b> github.com/lapendosndos</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>© <span id="year"></span> Lapendos — Built with Brain</p>
+    </footer>
+  </main>
+
+  <script>
+    const roles = [
+      "Developer Server",
+      "Leader Teamship",
+    ];
+
+    let currentRoleIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    let typingElement = null;
+
+    function typeLoop() {
+      if (!typingElement) return;
+
+      const currentRole = roles[currentRoleIndex];
+      const speed = isDeleting ? 35 : 70;
+
+      if (!isDeleting) {
+        typingElement.textContent = currentRole.slice(0, charIndex + 1);
+        charIndex++;
+
+        if (charIndex === currentRole.length) {
+          setTimeout(() => (isDeleting = true), 1300);
+        }
+      } else {
+        typingElement.textContent = currentRole.slice(0, charIndex - 1);
+        charIndex--;
+
+        if (charIndex === 0) {
+          isDeleting = false;
+          currentRoleIndex = (currentRoleIndex + 1) % roles.length;
+        }
+      }
+
+      setTimeout(typeLoop, speed);
+    }
+
+    function initScrollReveal() {
+      const items = document.querySelectorAll(".reveal");
+
+      const observer = new IntersectionObserver(
+        entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.15 }
+      );
+
+      items.forEach(el => observer.observe(el));
+    }
+
+    function initParallax() {
+      const layers = document.querySelectorAll(".parallax-layer");
+
+      window.addEventListener("mousemove", e => {
+        const x = (e.clientX / window.innerWidth - 0.5) * 2;
+        const y = (e.clientY / window.innerHeight - 0.5) * 2;
+
+        layers.forEach(layer => {
+          const depth = parseFloat(layer.dataset.depth) || 0.1;
+          const moveX = -x * depth * 40;
+          const moveY = -y * depth * 40;
+          layer.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
+        });
+      });
+    }
+
+    function initTilt() {
+      const tiltElements = document.querySelectorAll(".tilt");
+
+      tiltElements.forEach(el => {
+        const height = el.clientHeight;
+        const width = el.clientWidth;
+
+        function move(e) {
+          const rect = el.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          const rotateY = ((x - width / 2) / width) * 12;
+          const rotateX = ((y - height / 2) / height) * -12;
+
+          el.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translate3d(0,0,10px)`;
+        }
+
+        function leave() {
+          el.style.transform = "rotateX(0) rotateY(0) translate3d(0,0,0)";
+        }
+
+        el.addEventListener("mousemove", move);
+        el.addEventListener("mouseleave", leave);
+      });
+    }
+
+    let cpuChart, ramChart, netChart;
+
+    function initCharts() {
+      const cpuCtx = document.getElementById("cpuChart");
+      const ramCtx = document.getElementById("ramChart");
+      const netCtx = document.getElementById("netChart");
+
+      if (!cpuCtx) return;
+
+      const base = {
+        type: "line",
+        options: {
+          responsive: true,
+          animation: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { display: false },
+            y: {
+              ticks: { color: "#9ca3af", font: { size: 10 } },
+              grid: { color: "rgba(148,163,184,0.2)" }
+            }
+          }
+        }
+      };
+
+      cpuChart = new Chart(cpuCtx, {
+        ...base,
+        data: { labels: [], datasets: [{ data: [], borderColor: "#38bdf8", borderWidth: 2, tension: 0.35 }] }
+      });
+
+      ramChart = new Chart(ramCtx, {
+        ...base,
+        data: { labels: [], datasets: [{ data: [], borderColor: "#a855f7", borderWidth: 2, tension: 0.35 }] }
+      });
+
+      netChart = new Chart(netCtx, {
+        ...base,
+        data: { labels: [], datasets: [{ data: [], borderColor: "#22c55e", borderWidth: 2, tension: 0.35 }] }
+      });
+    }
+
+    function pushData(chart, value) {
+      const max = 20;
+      chart.data.labels.push("");
+      chart.data.datasets[0].data.push(value);
+
+      if (chart.data.datasets[0].data.length > max) {
+        chart.data.labels.shift();
+        chart.data.datasets[0].data.shift();
+      }
+
+      chart.update();
+    }
+
+    function initMetricsSimulation() {
+      const cpuVal = document.getElementById("cpu-val");
+      const ramVal = document.getElementById("ram-val");
+      const diskVal = document.getElementById("disk-val");
+      const netInVal = document.getElementById("net-in-val");
+      const netOutVal = document.getElementById("net-out-val");
+
+      function updateMetrics() {
+        const cpu = Math.floor(Math.random() * 60) + 20; // 20-80%
+        const ram = Math.floor(Math.random() * 50) + 30; // 30-80%
+        const disk = Math.floor(Math.random() * 40) + 40; // 40-80%
+        const netIn = Math.floor(Math.random() * 500) + 100; // 100-600 kbit/s
+        const netOut = Math.floor(Math.random() * 400) + 50; // 50-450 kbit/s
+
+        cpuVal.textContent = cpu + " %";
+        ramVal.textContent = ram + " %";
+        diskVal.textContent = disk + " %";
+        netInVal.textContent = netIn + " kbit/s";
+        netOutVal.textContent = netOut + " kbit/s";
+
+        pushData(cpuChart, cpu);
+        pushData(ramChart, ram);
+        pushData(netChart, (netIn + netOut) / 2);
+      }
+
+      updateMetrics();
+      setInterval(updateMetrics, 3000);
+    }
+
+    function initClusterSimulation() {
+      const container = document.getElementById("cluster-nodes");
+      if (!container) return;
+
+      const nodes = [
+        { name: "pve-node1", status: "offline", load: "0.8" },
+        { name: "pve-node2", status: "offline", load: "1.2" },
+        { name: "pve-node3", status: "maintenance", load: "0.2" }
+      ];
+
+      function updateCluster() {
+        container.innerHTML = "";
+        nodes.forEach(node => {
+          const li = document.createElement("li");
+          li.innerHTML = `<b>${node.name}</b> — ${node.status.toUpperCase()} • load: ${node.load}`;
+          container.appendChild(li);
+        });
+      }
+
+      updateCluster();
+      
+      setInterval(() => {
+        nodes.forEach(node => {
+          if (Math.random() > 0.7) {
+            node.load = (Math.random() * 2).toFixed(1);
+          }
+        });
+        updateCluster();
+      }, 5000);
+    }
+
+    function initPteroSimulation() {
+      const run = document.getElementById("ptero-running");
+      const off = document.getElementById("ptero-offline");
+      const nodes = document.getElementById("ptero-nodes");
+      const net = document.getElementById("ptero-net");
+
+      if (!run) return;
+
+      function updatePtero() {
+        const running = Math.floor(Math.random() * 20) + 10; // 10-30
+        const offline = Math.floor(Math.random() * 5); // 0-5
+        const totalNodes = Math.floor(Math.random() * 5) + 3; // 3-8
+        const network = Math.floor(Math.random() * 800) + 200; // 200-1000 kbit/s
+
+        run.textContent = running;
+        off.textContent = offline;
+        nodes.textContent = totalNodes;
+        net.textContent = network + " kbit/s";
+      }
+
+      updatePtero();
+      setInterval(updatePtero, 4000);
+    }
+    function initTerminal() {
+      const term = document.getElementById("terminal-content");
+      if (!term) return;
+
+      const lines = [
+        "Pepen@ops:~$ ssh root@node1",
+        "Last login: Sat Feb 17 17::40 2026",
+        "root@node1:~# uptime",
+        " 17:40:30 up 7 days, 3 users",
+        "root@node1:~# iptables -L -n",
+        "Chain INPUT (policy DROP)",
+        "ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:22",
+        "ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:80",
+        "ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:443",
+        "DROP       all  --  0.0.0.0/0            0.0.0.0/0",
+        "root@node1:~# tail -f /var/log/syslog",
+        "Dec 6 14:13:01 node1 systemd[1]: Starting system activity logging",
+        "Dec 6 14:13:15 node1 kernel: [12345.678] CPU usage: 23%",
+        "Dec 6 14:13:30 node1 sshd[1234]: Accepted publickey for user",
+        "root@node1:~# exit",
+        "logout",
+        "Pepen@ops:~$ "
+      ];
+
+      let idx = 0;
+
+      function renderLine() {
+        if (idx >= lines.length) {
+          setTimeout(() => {
+            term.innerHTML = "";
+            idx = 0;
+            renderLine();
+          }, 2000);
+          return;
+        }
+
+        const div = document.createElement("div");
+        div.className = "term-line";
+        term.appendChild(div);
+
+        let pos = 0;
+        const txt = lines[idx];
+
+        function typeChar() {
+          div.textContent = txt.slice(0, pos++);
+          term.scrollTop = term.scrollHeight;
+
+          if (pos <= txt.length) setTimeout(typeChar, 18);
+          else {
+            idx++;
+            setTimeout(renderLine, 200);
+          }
+        }
+
+        typeChar();
+      }
+
+      renderLine();
+    }
+
+    function updateYear() {
+      const yearSpan = document.getElementById("year");
+      if (yearSpan) {
+        yearSpan.textContent = new Date().getFullYear();
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      typingElement = document.getElementById("typing-text");
+      if (typingElement) typeLoop();
+
+      initScrollReveal();
+      initParallax();
+      initTilt();
+      initCharts();
+      initMetricsSimulation();
+      initClusterSimulation();
+      initPteroSimulation();
+      initTerminal();
+      updateYear();
+    });
+  </script>
+</body>
+</html>
